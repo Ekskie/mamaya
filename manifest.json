@@ -9,12 +9,12 @@
     "theme_color": "#ff6f61",
     "icons": [
         {
-            "src": "/malupiton.PNG",
+            "src": "/logo192.PNG",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/malupiton.jpg",
+            "src": "/logo512.jpg",
             "sizes": "512x512",
             "type": "image/jpeg"
         }

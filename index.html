@@ -1,17 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - MAMAYA</title>
-        <link rel="manifest" href="manifest.json">
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-            .then(() => console.log("Service Worker Registered"))
-            .catch(err => console.log("Service Worker Registration Failed", err));
-        }
-    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,16 +19,19 @@
             justify-content: center;
             overflow: hidden;
         }
+
         .container {
             width: 100%;
             max-width: 400px;
             text-align: center;
         }
+
         .logo {
             font-size: 32px;
             font-weight: bold;
             margin-bottom: 50px;
         }
+
         .slider-container {
             position: relative;
             width: 80%;
@@ -49,6 +45,18 @@
             overflow: hidden;
             margin: auto;
         }
+
+        /* Creates the background trail */
+        .slider-mask {
+            position: absolute;
+            width: 0%;
+            height: 100%;
+            background: #222;
+            border-radius: 25px;
+            transition: width 0.1s ease;
+            z-index: 1;
+        }
+
         .slider {
             position: absolute;
             width: 50px;
@@ -61,8 +69,10 @@
             justify-content: center;
             color: white;
             font-size: 18px;
-            transition: transform 0.2s ease;
+            transition: transform 0.1s ease;
+            z-index: 2;
         }
+
         .slider-text {
             width: 100%;
             text-align: center;
@@ -70,22 +80,27 @@
             font-size: 18px;
             font-weight: bold;
             pointer-events: none;
+            position: absolute;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="logo">MAMAYA</div>
         <div class="slider-container" id="sliderContainer">
+            <div class="slider-mask" id="sliderMask"></div> <!-- Masking Element -->
             <div class="slider" id="slider">→</div>
-            <a href="nextpage.html"></a>
-            <div class="slider-text">Get Started</div>
+            <div class="slider-text" id="sliderText">Get Started</div>
         </div>
     </div>
 
     <script>
         const slider = document.getElementById("slider");
         const sliderContainer = document.getElementById("sliderContainer");
+        const sliderText = document.getElementById("sliderText");
+        const sliderMask = document.getElementById("sliderMask");
+
         let isDragging = false;
         let startX, currentX;
         let sliderWidth = sliderContainer.offsetWidth - slider.offsetWidth;
@@ -101,6 +116,7 @@
                     window.location.href = "login.html";
                 } else {
                     slider.style.transform = `translateX(0px)`;
+                    sliderMask.style.width = `0px`; // Reset mask
                 }
             }
             isDragging = false;
@@ -115,6 +131,7 @@
             if (currentX > sliderWidth) currentX = sliderWidth;
 
             slider.style.transform = `translateX(${currentX}px)`;
+            sliderMask.style.width = `${currentX + 25}px`; // Expand the mask
         }
 
         // Touch Events (Mobile)
@@ -128,4 +145,5 @@
         document.addEventListener("mousemove", moveDrag);
     </script>
 </body>
+
 </html>

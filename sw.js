@@ -11,8 +11,8 @@ self.addEventListener('install', (event) => {
                 'userdashboard.html',
                 'worklist.html',
                 'manifest.json',
-                'logo192.jpg',
-                'logo512.png'
+                'logo192.PNG',
+                'logo512.PNG'
             ]);
         })
     );

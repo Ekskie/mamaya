@@ -11,8 +11,8 @@ self.addEventListener('install', (event) => {
                 'userdashboard.html',
                 'worklist.html',
                 'manifest.json',
-                'malupiton.jpg',
-                'ins.png'
+                'logo192.jpg',
+                'logo512.png'
             ]);
         })
     );

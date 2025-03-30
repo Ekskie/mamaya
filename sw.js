@@ -3,7 +3,7 @@ self.addEventListener('install', (event) => {
         caches.open('mamaya-cache').then((cache) => {
             return cache.addAll([
                 'index.html',
-                'firstpage.html',
+                'login.html',
                 'addingWork.html',
                 'admin.html',
                 'signup.html',

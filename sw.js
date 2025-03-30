@@ -10,7 +10,6 @@ self.addEventListener('install', (event) => {
                 'userdashboard.html',
                 'worklist.html',
                 'manifest.json',
-                'malupiton.jpg',
                 'malupiton.jpg'
             ]);
         })

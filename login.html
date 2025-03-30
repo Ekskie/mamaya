@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAMAYA Login</title>
+    <style>
+        /* General Styles */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #0a0f3a;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        /* Container */
+        .container {
+            text-align: center;
+        }
+
+        /* Logo */
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .tm {
+            font-size: 14px;
+            vertical-align: super;
+            color: gold;
+        }
+
+        /* Login Box */
+        .login-box {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            width: 320px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            margin-top: 30px;
+        }
+
+        h2 {
+            color: #4c2fd8;
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .subtext {
+            font-size: 14px;
+            color: gray;
+        }
+
+        /* Form Inputs */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        label {
+            font-size: 14px;
+            text-align: left;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid gray;
+            margin-bottom: 10px; /* Ensures spacing between inputs */
+            box-sizing: border-box;
+        }
+
+        /* Options */
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .options label {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Adds spacing between checkbox and text */
+        }
+
+        .options input[type="checkbox"] {
+            margin: 0; /* Ensures proper alignment */
+        }
+
+        .forgot-password {
+            color: red;
+            text-decoration: none;
+        }
+
+        /* Buttons */
+        .login-btn, .signup-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            margin-top: 8px;
+        }
+
+        .login-btn {
+            background: #4c2fd8;
+            color: white;
+        }
+
+        .signup-btn {
+            background: none;
+            border: 2px solid #4c2fd8;
+            color: #4c2fd8;
+        }
+
+        /* Social Icons */
+        .or {
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-icons img {
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo">MAMAYA<span class="tm">®</span></div>
+        <div class="login-box">
+            <h2>Welcome Back!</h2>
+            <p class="subtext">Login to access your account</p>
+
+            <form>
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+
+                <div class="options">
+                    <label><input type="checkbox"> Remember me</label>
+                    <a href="#" class="forgot-password">Forgot Password</a>
+                </div>
+            </form>
+
+ 
+            <button class="login-btn" type="button" onclick="login()">Login</button>
+
+            
+            <a href="signup.html">
+                <button class="signup-btn">Sign Up</button>
+            </a>
+
+            <p class="or">or continue with</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/RedLich08" target="_blank">
+                    <img src="fb.png" alt="Facebook">
+                </a>
+                <a href="https://accounts.google.com" target="_blank">
+                    <img src="google.png" alt="Google">
+                </a>
+                <a href="https://www.instagram.com" target="_blank">
+                    <img src="ins.png" alt="Instagram">
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function login() {
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+    
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+    
+            let user = users.find(user => user.email === email && user.password === password);
+    
+            if (user) {
+                localStorage.setItem("loggedInUser", JSON.stringify(user));
+                alert("Login successful!");
+                window.location.href = "worklist.html"; // Redirect after successful login
+            } else {
+                alert("Invalid email or password! Please sign up first.");
+            }
+        }
+    </script>
+    
+
+</body>
+</html>

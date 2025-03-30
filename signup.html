@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - MAMAYA</title>
+    <style>
+        /* General Styles */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #0a0f3a;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        /* Container */
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 30px;
+            width: 350px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* Logo */
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4c2fd8;
+        }
+
+        .tm {
+            font-size: 14px;
+            vertical-align: super;
+            color: gold;
+        }
+
+        h2 {
+            color: #4c2fd8;
+            font-size: 20px;
+            margin-top: 10px;
+        }
+
+        .subtext {
+            font-size: 14px;
+            color: gray;
+            margin-bottom: 20px;
+        }
+
+        /* Form */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 14px;
+            text-align: left;
+            font-weight: bold;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid gray;
+            font-size: 14px;
+        }
+
+        .terms {
+            font-size: 12px;
+            text-align: left;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .terms input {
+            margin: 0;
+            width: 16px;
+            height: 16px;
+        }
+
+        .terms a {
+            color: #4c2fd8;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Button */
+        .signup-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background: blue;
+            color: white;
+            margin-top: 15px;
+        }
+
+        /* Already have an account */
+        .login-link {
+            font-size: 14px;
+            margin-top: 10px;
+            color: gray;
+        }
+
+        .login-link a {
+            color: #4c2fd8;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo">MAMAYA<span class="tm">®</span></div>
+        <h2>Get Started</h2>
+        <p class="subtext">by creating a free account</p>
+
+        <form onsubmit="event.preventDefault(); signup();">
+            <label>First Name</label>
+            <input type="text" id="signup-firstname" placeholder="Enter your first name" required>
+
+            <label>Last Name</label>
+            <input type="text" id="signup-lastname" placeholder="Enter your last name" required>
+
+            <label>Email</label>
+            <input type="email" id="signup-email" placeholder="Enter your email" required>
+
+            <label>Phone Number</label>
+            <input type="tel" id="signup-phone" placeholder="+63 |" required>
+
+            <label>Password</label>
+            <input type="password" id="signup-password" placeholder="Enter your password" required>
+
+            <label>Confirm Password</label>
+            <input type="password" id="signup-confirm-password" placeholder="Confirm your password" required>
+
+            <label class="terms">
+                <input type="checkbox" id="terms-checkbox" required> By checking the box you agree to our <a href="#">Terms</a> and <a href="#">Conditions</a>.
+            </label>
+
+            <button type="submit" class="signup-btn">Sign Up</button>
+        </form>
+
+        <p class="login-link">Already have an account? <a href="index.html">Login</a></p>
+    </div>
+
+    <script>
+        function signup() {
+            let firstname = document.getElementById("signup-firstname").value;
+            let lastname = document.getElementById("signup-lastname").value;
+            let email = document.getElementById("signup-email").value;
+            let phone = document.getElementById("signup-phone").value;
+            let password = document.getElementById("signup-password").value;
+            let confirmPassword = document.getElementById("signup-confirm-password").value;
+            let termsChecked = document.getElementById("terms-checkbox").checked;
+        
+            if (!termsChecked) {
+                alert("You must agree to the terms and conditions.");
+                return;
+            }
+        
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+        
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+        
+            if (users.some(user => user.email === email)) {
+                alert("An account with this email already exists!");
+                return;
+            }
+        
+            users.push({ firstname, lastname, email, phone, password });
+            localStorage.setItem("users", JSON.stringify(users));
+        
+            alert("Account created successfully! Please log in.");
+            window.location.href = "index.html"; // Redirect to login page
+        }
+        </script>
+        
+</body>
+</html>

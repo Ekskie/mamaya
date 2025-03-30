@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - MAMAYA</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #000;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+        }
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+        .profile-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+            cursor: pointer;
+        }
+        .profile-name {
+            font-size: 18px;
+            margin-top: 5px;
+        }
+        .upgrade-box {
+            background: #222;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .upgrade-btn {
+            background: yellow;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .dashboard {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .card {
+            background: #333;
+            padding: 15px;
+            border-radius: 10px;
+            width: 48%;
+        }
+        .graph {
+            background: #222;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .logout-btn {
+            background: red;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .logout-btn:hover {
+            background: darkred;
+        }
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-btn" onclick="window.location.href='worklist.html'">←</button>
+
+    <div class="container">
+        <h1>Profile</h1>
+        <div class="profile-section">
+            <label for="profilePic">
+                <img id="profileImage" src="default-avatar.png" alt="Add Picture" class="profile-img">
+            </label>
+            <input type="file" id="profilePic" accept="image/*" onchange="uploadImage(event)">
+            <h3 class="profile-name"></h3>
+         
+        </div>
+
+        <div class="upgrade-box">
+            <span>Upgrade to PRO</span>
+            <button class="upgrade-btn">PRO</button>
+        </div>
+
+        <h2>Task Overview</h2>
+        <div class="dashboard">
+            <div class="card">
+                <h3 id="completedTasks">0</h3>
+                <p>Completed Task</p>
+            </div>
+            <div class="card">
+                <h3 id="pendingTasks">0</h3>
+                <p>Pending Task</p>
+            </div>
+        </div>
+
+        <h2>Completion of Daily Task</h2>
+        <div class="graph">
+            <canvas id="taskChart"></canvas>
+        </div>
+
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // ✅ Check if user is logged in
+            let loggedInEmail = localStorage.getItem("loggedInUser");
+            if (!loggedInEmail) {
+                alert("Please log in first.");
+                window.location.href = "index.html"; 
+                return;
+            }
+
+            // ✅ Load user data
+            let user = JSON.parse(localStorage.getItem(loggedInEmail));
+            if (user) {
+                document.querySelector(".profile-name").textContent = user.firstName + " " + user.lastName;
+            }
+
+            // ✅ Load saved profile picture
+            let savedImage = localStorage.getItem("profilePicture");
+            if (savedImage) {
+                document.getElementById("profileImage").src = savedImage;
+            }
+
+            // ✅ Load task data
+            updateTaskCounts();
+
+            // ✅ Initialize chart
+            renderTaskChart();
+        });
+
+        // ✅ Profile Picture Upload
+        function uploadImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profileImage').src = e.target.result;
+                    localStorage.setItem("profilePicture", e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ✅ Update task counts
+        function updateTaskCounts() {
+            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            let completedTasks = tasks.filter(task => task.completed).length;
+            let pendingTasks = tasks.length - completedTasks;
+
+            document.getElementById("completedTasks").textContent = completedTasks;
+            document.getElementById("pendingTasks").textContent = pendingTasks;
+        }
+
+        // ✅ Render task completion chart
+        function renderTaskChart() {
+            const ctx = document.getElementById('taskChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+                    datasets: [{
+                        label: 'Tasks Completed',
+                        data: [0, 1, 3, 2, 4, 5, 6], // Example data
+                        backgroundColor: 'blue'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // ✅ Logout function
+        function logout() {
+            localStorage.removeItem("loggedInUser");
+            alert("You have been logged out.");
+            window.location.href = "index.html";
+        }
+    </script>
+
+</body>
+</html>

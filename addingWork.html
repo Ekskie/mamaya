@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Task</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            color: white;
+        }
+        .container {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 20px;
+            width: 350px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 10px;
+        }
+        select, input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+        }
+        select, input, textarea {
+            background: #0f3460;
+            color: white;
+        }
+        .time-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .time-box {
+            width: 48%;
+        }
+        #calendar-container {
+            margin-top: 10px;
+            text-align: center;
+        }
+        #month-selector, #year-selector {
+            background: #0f3460;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        #calendar {
+            background: #0f3460;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        button {
+            background: #00a8ff;
+            color: white;
+            cursor: pointer;
+        }
+        .selected {
+            background-color: #00a8ff;
+            color: white;
+            border-radius: 50%;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-btn" onclick="window.location.href='worklist.html'">&#8592;</button>
+        <h2>NEW TASK</h2>
+        
+        <select id="category">
+            <option value="school">School</option>
+            <option value="work">Work</option>
+            <option value="personal">Personal</option>
+            <option value="event">Event</option>
+        </select>
+        
+        <label>Schedule</label>
+        <input type="text" id="task-name" placeholder="Name">
+        <textarea id="task-desc" placeholder="Description"></textarea>
+        
+        <div class="attachment">
+            <label>Attachment</label>
+            <button class="add-attachment">ADD</button>
+        </div>
+        
+        <div class="time-container">
+            <div class="time-box">
+                <label>Start Time</label>
+                <input type="time" id="start-time">
+            </div>
+            <div class="time-box">
+                <label>End Time</label>
+                <input type="time" id="end-time">
+            </div>
+        </div>
+        
+        <div id="calendar-container">
+            <select id="month-selector"></select>
+            <select id="year-selector"></select>
+            <div id="calendar"></div>
+        </div>
+        
+        <button id="create-task">Create Task</button>
+    </div>
+    
+
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let calendar = document.getElementById("calendar");
+            let monthSelector = document.getElementById("month-selector");
+            let yearSelector = document.getElementById("year-selector");
+    
+            function populateMonthSelector() {
+                for (let i = 0; i < 12; i++) {
+                    let option = document.createElement("option");
+                    option.value = i;
+                    option.textContent = new Date(2025, i, 1).toLocaleString('default', { month: 'long' });
+                    monthSelector.appendChild(option);
+                }
+                monthSelector.value = new Date().getMonth();
+            }
+    
+            function populateYearSelector() {
+                let currentYear = new Date().getFullYear();
+                for (let i = currentYear - 5; i <= currentYear + 5; i++) {
+                    let option = document.createElement("option");
+                    option.value = i;
+                    option.textContent = i;
+                    yearSelector.appendChild(option);
+                }
+                yearSelector.value = currentYear;
+            }
+    
+            function renderCalendar() {
+                calendar.innerHTML = "";
+                let month = parseInt(monthSelector.value);
+                let year = parseInt(yearSelector.value);
+                let firstDay = new Date(year, month, 1).getDay();
+                let daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+                let table = document.createElement("table");
+                let row = document.createElement("tr");
+                let daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    
+                daysOfWeek.forEach(day => {
+                    let th = document.createElement("th");
+                    th.innerText = day;
+                    row.appendChild(th);
+                });
+                table.appendChild(row);
+    
+                row = document.createElement("tr");
+                for (let i = 0; i < firstDay; i++) {
+                    row.appendChild(document.createElement("td"));
+                }
+    
+                for (let day = 1; day <= daysInMonth; day++) {
+                    if (row.children.length === 7) {
+                        table.appendChild(row);
+                        row = document.createElement("tr");
+                    }
+                    let cell = document.createElement("td");
+                    cell.innerText = day;
+                    cell.style.cursor = "pointer";
+                    cell.addEventListener("click", function() {
+                        document.querySelectorAll("td").forEach(td => td.classList.remove("selected"));
+                        cell.classList.add("selected");
+                    });
+                    row.appendChild(cell);
+                }
+                table.appendChild(row);
+                calendar.appendChild(table);
+            }
+    
+            document.getElementById("create-task").addEventListener("click", function() {
+    let selectedDateElement = document.querySelector(".selected");
+
+    if (!selectedDateElement) {
+        alert("Please select a date.");
+        return;
+    }
+
+    let month = parseInt(document.getElementById("month-selector").value);
+    let year = parseInt(document.getElementById("year-selector").value);
+    let day = parseInt(selectedDateElement.textContent);
+
+    let taskDate = new Date(year, month, day);
+
+    let task = {
+        category: document.getElementById("category").value,
+        name: document.getElementById("task-name").value.trim(),
+        description: document.getElementById("task-desc").value.trim(),
+        date: taskDate.toISOString().split("T")[0], 
+        startTime: document.getElementById("start-time").value,
+        endTime: document.getElementById("end-time").value,
+        coins: Math.floor(Math.random() * (200 - 50 + 1)) + 50  // 🪙 Add random coins (50-200)
+    };
+
+    if (!task.name || !task.startTime || !task.endTime) {
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks.push(task);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+
+    window.location.href = "worklist.html";
+});
+
+
+    
+            populateMonthSelector();
+            populateYearSelector();
+            renderCalendar();
+            monthSelector.addEventListener("change", renderCalendar);
+            yearSelector.addEventListener("change", renderCalendar);
+        });
+    </script>
+    
+</body>
+</html>

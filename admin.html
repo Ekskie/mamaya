@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MAMAYA</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #000;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+        }
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        .profile img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+        .dashboard {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .card {
+            background: linear-gradient(to bottom, #0f0, #003300);
+            padding: 15px;
+            border-radius: 10px;
+            width: 48%;
+        }
+        .graph {
+            background: #222;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+    <div class="container">
+        <h1>Admin</h1>
+        <div class="profile">
+            <img src="admin.png" alt="Admin Profile">
+            <div>
+                <h3>Soaferr Latina</h3>
+                <small>Switch Account</small>
+            </div>
+        </div>
+        <h2>Dashboard</h2>
+        <div class="dashboard">
+            <div class="card">
+                <h3>0</h3>
+                <p>Successful Task</p>
+            </div>
+            <div class="card" style="background: linear-gradient(to bottom, #f06, #600);">
+                <h3>0</h3>
+                <p>Users</p>
+            </div>
+        </div>
+        <h2>Completion of Daily Task</h2>
+        <div class="graph">
+            <canvas id="taskChart"></canvas>
+        </div>
+    </div>
+    <script>
+        const ctx = document.getElementById('taskChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+                datasets: [{
+                    label: 'Tasks',
+                    data: [1, 2, 3, 2, 5, 0, 0],
+                    backgroundColor: 'blue'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

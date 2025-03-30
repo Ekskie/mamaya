@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work List</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .category-buttons button {
+            background: #0f3460;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .task-container {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .task {
+            background: #1a1a2e;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .task-content {
+            flex: 1;
+        }
+        .delete-button {
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .floating-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div style="position: absolute; top: 20px; left: 20px; display: flex; align-items: center;">
+        <img src="default-avatar.png" id="worklistProfileIcon" style="width: 40px; height: 40px; border-radius: 50%; cursor: pointer; margin-right: 10px;">
+        <span id="userName" style="font-weight: bold;"></span>
+    </div>
+    
+    <h1>WORK LIST</h1>
+    <div class="category-buttons">
+        <button onclick="filterTasks('all')">All</button>
+        <button onclick="filterTasks('school')">School</button>
+        <button onclick="filterTasks('personal')">Personal</button>
+        <button onclick="filterTasks('work')">Work</button>
+        <button onclick="filterTasks('event')">Events</button>
+    </div>
+    
+    <h2>Today</h2>
+    <div id="today-tasks" class="task-container"></div>
+    
+    <h2>Future</h2>
+    <div id="future-tasks" class="task-container"></div>
+    
+    <button class="floating-button" onclick="window.location.href='addingWork.html'">+</button>
+
+    
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // ✅ User authentication check before loading tasks
+            let loggedInEmail = localStorage.getItem("loggedInUser");
+            if (!loggedInEmail) {
+                alert("Please log in first.");
+                window.location.href = "index.html"; // Redirect to login
+                return;
+            }
+    
+            let user = JSON.parse(localStorage.getItem(loggedInEmail));
+            if (user) {
+                document.getElementById("userName").textContent = user.firstName + " " + user.lastName;
+            }
+    
+            document.getElementById("worklistProfileIcon").addEventListener("click", function() {
+    window.location.href = "userdashboard.html";
+
+
+            });
+    
+            // ✅ Load tasks after user authentication
+            loadTasks();
+        });
+        document.addEventListener("DOMContentLoaded", function() {
+    // ✅ Load profile picture from localStorage
+    let savedImage = localStorage.getItem("profilePicture");
+    if (savedImage) {
+        document.getElementById("worklistProfileIcon").src = savedImage;
+    }
+
+    // ✅ Load user name if logged in
+    let loggedInEmail = localStorage.getItem("loggedInUser");
+    if (!loggedInEmail) {
+        alert("Please log in first.");
+        window.location.href = "index.html"; // Redirect to login
+        return;
+    }
+
+    let user = JSON.parse(localStorage.getItem(loggedInEmail));
+    if (user) {
+        document.getElementById("userName").textContent = user.firstName + " " + user.lastName;
+    }
+
+    // ✅ Redirect profile icon click to user dashboard
+    document.getElementById("worklistProfileIcon").addEventListener("click", function() {
+        window.location.href = "userdashboard.html";
+    });
+
+    // ✅ Load tasks after user authentication
+    loadTasks();
+});
+
+        function loadTasks(filterCategory = 'all') {
+            let todayTasksContainer = document.getElementById("today-tasks");
+            let futureTasksContainer = document.getElementById("future-tasks");
+            todayTasksContainer.innerHTML = ""; 
+            futureTasksContainer.innerHTML = ""; 
+    
+            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            let today = new Date().toISOString().split("T")[0];
+    
+            if (filterCategory !== 'all') {
+                tasks = tasks.filter(task => task.category.toLowerCase() === filterCategory.toLowerCase());
+            }
+    
+            let todayTasks = tasks.filter(task => task.date === today);
+            let futureTasks = tasks.filter(task => task.date > today);
+    
+            if (todayTasks.length === 0) {
+                todayTasksContainer.innerHTML = "<p>No tasks for today.</p>";
+            }
+            todayTasks.forEach((task, index) => {
+                todayTasksContainer.appendChild(createTaskElement(task, index));
+            });
+    
+            if (futureTasks.length === 0) {
+                futureTasksContainer.innerHTML = "<p>No future tasks.</p>";
+            }
+            futureTasks.forEach((task, index) => {
+                futureTasksContainer.appendChild(createTaskElement(task, index));
+            });
+        }
+    
+        function createTaskElement(task, index) {
+            let taskDiv = document.createElement("div");
+            taskDiv.classList.add("task");
+    
+            let taskContent = document.createElement("div");
+            taskContent.classList.add("task-content");
+            taskContent.innerHTML = `
+                <strong>${task.name}</strong> (${task.category})<br>
+                ${task.description}<br>
+                <small>${task.date} | ${task.startTime} - ${task.endTime}</small>
+            `;
+    
+            // Create a coin element
+            let coinElement = document.createElement("span");
+            coinElement.style.marginRight = "10px";  
+            coinElement.style.color = "#FFD700";  // Gold color for coins
+            coinElement.style.fontWeight = "bold";  
+            coinElement.innerText = `💰 ${task.coins} Coins`;
+    
+            let deleteButton = document.createElement("button");
+            deleteButton.classList.add("delete-button");
+            deleteButton.innerText = "Delete";
+            deleteButton.onclick = function () {
+                deleteTask(index);
+            };
+    
+            taskDiv.appendChild(taskContent);
+            taskDiv.appendChild(coinElement);  // 🪙 Place coins before the delete button
+            taskDiv.appendChild(deleteButton);
+    
+            return taskDiv;
+        }
+    
+        function deleteTask(index) {
+            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            tasks.splice(index, 1);
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            loadTasks(); 
+        }
+    
+        function filterTasks(category) {
+            loadTasks(category);
+        }
+    </script>
+    
+    
+</body>
+</html>
